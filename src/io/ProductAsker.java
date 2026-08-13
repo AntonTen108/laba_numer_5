@@ -1,0 +1,187 @@
+package io;
+import models.*;
+import collection.*;
+import exceptions.ValidationException;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+import java.util.Arrays;
+
+public class ProductAsker {
+
+    private final boolean allowRetry;
+
+    public ProductAsker(boolean allowRetry) {
+        this.allowRetry = allowRetry;
+    }
+
+    public String askString(InputSource source, String fieldName) {
+        source.clue(fieldName);
+        return source.nextLine();
+    }
+
+    public String askStringIsNotEmpty(InputSource source, String fieldName) {
+        while (true) {
+            source.clue(fieldName);
+            String input = source.nextLine();
+             if (!input.isEmpty()) {
+                 return input;
+             }
+             if (!allowRetry) {
+                 throw new ValidationException(" Поле " + fieldName + " не может быть пустым, попробуйте снова!");
+             } System.out.println("Вы ввели пустое значение, пожалуйста попробуйте снова");
+        }
+    }
+
+    public double askDouble(InputSource source, String fieldName) {
+        while (true) {
+            source.clue(fieldName);
+            String input = source.nextLine();
+            try {
+                double answer = Double.parseDouble(input);
+                return answer;
+        } catch (NumberFormatException e) {
+                if (!allowRetry) {
+                throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
+            }
+            }
+        }
+
+        public int askInt (InputSource source, String fieldName) {
+            while (true) {
+                source.clue(fieldName);
+                String input = source.nextLine();
+                try {
+                    int answer = Integer.parseInt(input);
+                    return answer;
+                } catch (NumberFormatException e) {
+                    if (!allowRetry) {
+                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                    } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
+                }
+            }
+        }
+
+        public long askLong(InputSource source, String fieldName) {
+            while (true) {
+                source.clue(fieldName);
+                String input = source.nextLine();
+                try {
+                    long answer = Long.parseLong(input);
+                    return answer;
+                } catch (NumberFormatException e) {
+                    if (!allowRetry) {
+                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                    } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
+                }
+            }
+        }
+
+        public float askFloat(InputSource source, String fieldName) {
+            while (true) {
+                source.clue(fieldName);
+                String input = source.nextLine();
+                try {
+                    float answer = Float.parseFloat(input);
+                    return answer;
+                } catch (NumberFormatException e) {
+                    if (!allowRetry) {
+                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                    } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
+                }
+            }
+        }
+
+    public <T extends Enum<T>> T askEnum(InputSource source, String fieldName, Class<T> enumClass) {
+        T[] constants = enumClass.getEnumConstants();
+        System.out.println("Доступные значения для ввода " + fieldName + ": " + Arrays.toString(constants));
+
+        while (true) {
+            source.clue(fieldName);
+            String input = source.nextLine();
+            try {
+                return Enum.valueOf(enumClass, input.trim().toUpperCase());
+            } catch (IllegalArgumentException e) {
+                if (!allowRetry) {
+                    throw new ValidationException("Значение поля " + fieldName + " введено неверно!");
+                }
+                System.out.println("Такой константы нет, пожалуйста попробуйте снова");
+            }
+        }
+    }
+
+    public LocalDateTime askDateTime(InputSource source, String fieldName){
+        while (true) {
+            source.clue(fieldName);
+            String input = source.nextLine();
+            try {
+                LocalDateTime answer = LocalDateTime.parse(input);
+                return answer;
+            } catch (DateTimeParseException e) {
+                if (!allowRetry) {
+                    throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
+          }
+      }
+    }
+
+    public Coordinates askCoordinates (InputSource source) {
+        double x = askDouble(source, "координату x");
+        int y = askInt(source, "координату y");
+        return new Coordinates(x, y);
+    }
+
+    public Location askLocation(InputSource source) {
+        while (true) {
+            source.clue(" координату x (нажмите enter, если хотите оставить класс location пустым)");
+            String xInput = source.nextLine();
+
+            if (xInput.isEmpty()) {
+                return null;
+            }
+
+            try {
+                long x = Long.parseLong(xInput);
+                int y = askInt(source, " значение y ");
+                float z = askFloat(source, "значение z ");
+                return new Location(x, y, z);
+            } catch (NumberFormatException e) {
+                if (!allowRetry) {
+                    throw new ValidationException("Введён некорректный тип данных для поля x!");
+                }
+                System.out.println("Вы ввели некорректный формат значения, пожалуйста попробуйте снова");
+            }
+        }
+    }
+
+
+    public  Person askPerson(InputSource source) {
+        String name = askStringIsNotEmpty(source, "имя владельца");
+        LocalDateTime birthday = askDateTime(source, "дату рождения формата(гггг-мм-ддT(англ)чч:мм:сс)");
+        Color eyeColor = askEnum(source, "цвет глаз", Color.class);
+        Location location = askLocation(source);
+        return new Person(name, birthday, eyeColor, location);
+    }
+
+    public Product askProduct(InputSource source) {
+        String name = askStringIsNotEmpty(source, "название продукта");
+        Coordinates coordinates = askCoordinates(source);
+        long price = askLong(source, "цену");
+        String partNumber = askStringIsNotEmpty(source, "порядковый номер");
+        UnitOfMeasure unitOfMeasure;
+        source.clue("единицу измерения (нажмите enter, если хотите оставить значение unitOfMeasure пустым)");
+        String unitInput = source.nextLine();
+        if (unitInput.isEmpty()) {
+            unitOfMeasure = null;
+        } else {
+            unitOfMeasure = Enum.valueOf(UnitOfMeasure.class, unitInput);
+        }
+
+        Person owner = askPerson(source);
+        return new Product(name,  coordinates, price, partNumber, unitOfMeasure, owner);
+
+    }
+}
+
+
