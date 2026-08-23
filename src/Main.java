@@ -41,12 +41,14 @@ public class Main {
 
         while (true) {
             String input = consoleSource.nextLine();
-            if (input == null || input.isBlank()) {
+            if (input == null) {
+                break;
+            }
+            if (input.isBlank()) {
                 continue;
             }
             String res = commandManager.handle(input, consoleSource, collectionManager);
             System.out.println(res);
-
         }
     }
 }
