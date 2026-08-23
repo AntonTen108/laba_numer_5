@@ -1,6 +1,5 @@
 package commands;
 
-import exceptions.ValidationException;
 import io.InputSource;
 import io.InteractiveInput;
 import io.ProductAsker;
@@ -14,7 +13,7 @@ public abstract class AbstractCommand  implements Command {
         try {
             return Integer.parseInt(args);
         } catch (NumberFormatException e) {
-            throw new ValidationException("Некорректный id = " + args);
+            throw new RuntimeException("Некорректный id = " + args);
         }
     }
 
@@ -25,7 +24,7 @@ public abstract class AbstractCommand  implements Command {
 
     protected void requireArgs(String[] args, int count) {
         if (args.length < count) {
-            throw new ValidationException(" Недостаточно аргументов для команды" + getName());
+            throw new RuntimeException(" Недостаточно аргументов для команды" + getName());
         }
     }
 

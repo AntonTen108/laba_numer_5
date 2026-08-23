@@ -1,6 +1,5 @@
 package io;
 
-import exceptions.CsvParseException;
 import models.*;
 
 import java.time.LocalDateTime;
@@ -60,7 +59,7 @@ public class CSVmaker {
 
            return new Product(id, name, coordinates, creationDate, price, partNumber, unitOfMeasure, owner);
        } catch (Exception e) {
-           throw new CsvParseException("Не удалось обработать строку" + line + e);
+           throw new RuntimeException("Не удалось обработать строку" + line + e);
        }
 
     }

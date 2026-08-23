@@ -1,7 +1,5 @@
 package io;
 import models.*;
-import collection.*;
-import exceptions.ValidationException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -28,7 +26,7 @@ public class ProductAsker {
                  return input;
              }
              if (!allowRetry) {
-                 throw new ValidationException(" Поле " + fieldName + " не может быть пустым, попробуйте снова!");
+                 throw new RuntimeException(" Поле " + fieldName + " не может быть пустым, попробуйте снова!");
              } System.out.println("Вы ввели пустое значение, пожалуйста попробуйте снова");
         }
     }
@@ -42,7 +40,7 @@ public class ProductAsker {
                 return answer;
         } catch (NumberFormatException e) {
                 if (!allowRetry) {
-                throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                 } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
             }
             }
@@ -57,7 +55,7 @@ public class ProductAsker {
                     return answer;
                 } catch (NumberFormatException e) {
                     if (!allowRetry) {
-                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                        throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                     } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
                 }
             }
@@ -72,7 +70,7 @@ public class ProductAsker {
                     return answer;
                 } catch (NumberFormatException e) {
                     if (!allowRetry) {
-                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                        throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                     } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
                 }
             }
@@ -87,7 +85,7 @@ public class ProductAsker {
                     return answer;
                 } catch (NumberFormatException e) {
                     if (!allowRetry) {
-                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                        throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                     } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
                 }
             }
@@ -104,7 +102,7 @@ public class ProductAsker {
                 return Enum.valueOf(enumClass, input.trim().toUpperCase());
             } catch (IllegalArgumentException e) {
                 if (!allowRetry) {
-                    throw new ValidationException("Значение поля " + fieldName + " введено неверно!");
+                    throw new RuntimeException("Значение поля " + fieldName + " введено неверно!");
                 }
                 System.out.println("Такой константы нет, пожалуйста попробуйте снова");
             }
@@ -120,7 +118,7 @@ public class ProductAsker {
                 return answer;
             } catch (DateTimeParseException e) {
                 if (!allowRetry) {
-                    throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                    throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                 } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
           }
       }
@@ -143,12 +141,12 @@ public class ProductAsker {
 
             try {
                 long x = Long.parseLong(xInput);
-                int y = askInt(source, " значение y ");
-                float z = askFloat(source, "значение z ");
+                int y = askInt(source, " координату y ");
+                float z = askFloat(source, "координату z ");
                 return new Location(x, y, z);
             } catch (NumberFormatException e) {
                 if (!allowRetry) {
-                    throw new ValidationException("Введён некорректный тип данных для поля x!");
+                    throw new RuntimeException("Введён некорректный тип данных для поля x!");
                 }
                 System.out.println("Вы ввели некорректный формат значения, пожалуйста попробуйте снова");
             }
@@ -168,15 +166,15 @@ public class ProductAsker {
         String name = askStringIsNotEmpty(source, "название продукта");
         Coordinates coordinates = askCoordinates(source);
         long price = askLong(source, "цену");
-        String partNumber = askStringIsNotEmpty(source, "порядковый номер");
-        UnitOfMeasure unitOfMeasure;
-        source.clue("единицу измерения (нажмите enter, если хотите оставить значение unitOfMeasure пустым)");
-        String unitInput = source.nextLine();
-        if (unitInput.isEmpty()) {
-            unitOfMeasure = null;
-        } else {
-            unitOfMeasure = Enum.valueOf(UnitOfMeasure.class, unitInput);
-        }
+        String partNumber = askStringIsNotEmpty(source, "порядковый номер. Он должен составлять не менее 14 символов, но не более 79");
+        UnitOfMeasure unitOfMeasure = askEnum(source, "",  UnitOfMeasure.class);
+//        source.clue("единицу измерения (нажмите enter, если хотите оставить значение unitOfMeasure пустым) доступные варианты: " + UnitOfMeasure.class);
+//        String unitInput = source.nextLine();
+//        if (unitInput.isEmpty()) {
+//            unitOfMeasure = null;
+//        } else {
+//            unitOfMeasure = Enum.valueOf(UnitOfMeasure.class, unitInput);
+//        }
 
         Person owner = askPerson(source);
         return new Product(name,  coordinates, price, partNumber, unitOfMeasure, owner);

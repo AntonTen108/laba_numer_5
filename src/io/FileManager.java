@@ -1,7 +1,6 @@
 package io;
 
 import collection.CollectionManager;
-import exceptions.CsvParseException;
 import models.Product;
 
 import java.io.*;
@@ -42,7 +41,7 @@ public class FileManager {
                 try {
                     Product product = csvMapper.fromCsv(line);
                     manager.insert(product.getId(), product);
-            } catch (CsvParseException e) {
+            } catch (RuntimeException e) {
                     System.out.println("Передано некорректное значение " + e.getMessage() + " строка пропущена!");
                 }
         }

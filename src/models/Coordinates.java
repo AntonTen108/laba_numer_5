@@ -1,7 +1,5 @@
 package models;
 
-import exceptions.*;
-
 import java.util.Objects;
 
 public class Coordinates {
@@ -17,13 +15,13 @@ public class Coordinates {
 
     public void setX(Double x) {
         if (x == null) {
-            throw new ValidationException("x не может быть null!");
+            throw new RuntimeException("x не может быть null!");
         }
         this.x = x;
     }
     public void setY(Integer y) {
         if (y == null) {
-            throw new ValidationException("y не может быть null!");
+            throw new RuntimeException("y не может быть null!");
         }
             this.y = y;
     }

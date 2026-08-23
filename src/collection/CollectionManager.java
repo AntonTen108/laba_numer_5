@@ -1,7 +1,5 @@
 package collection;
 
-import exceptions.CollectionIsEmpty;
-import exceptions.ValidationException;
 import models.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -26,14 +24,14 @@ public class CollectionManager {
 
     public void insert(int id, Product product) {
         if (collection.containsKey(id)) {
-            throw new ValidationException("Элемент id = "+ id + " уже существует!");
+            throw new RuntimeException("Элемент id = "+ id + " уже существует!");
         }
         collection.put(id, product);
     }
 
     public void update(int id, Product newData) {
         if (!collection.containsKey(id)) {
-            throw new ValidationException("Элемента id = " + id + " не существует, нельзя обновить!");
+            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя обновить!");
         }
         Product exist = collection.get(id);
 
@@ -48,7 +46,7 @@ public class CollectionManager {
 
     public void removeKey(int id) {
         if (!collection.containsKey(id)) {
-            throw new ValidationException("Элемента id = " + id + " не существует, нельзя удалить!");
+            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя удалить!");
         }
         collection.remove(id);
     }
@@ -71,7 +69,7 @@ public class CollectionManager {
     }
     public void replaceIfGreater(int id, Product newProduct) {
         if (!collection.containsKey(id)) {
-            throw new ValidationException("Элемента id = " + id + " не существует, нельзя изменить на большее!");
+            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя изменить на большее!");
         }
         Product exist = collection.get(id);
         int i = newProduct.compareTo(exist);
@@ -88,7 +86,7 @@ public class CollectionManager {
 
     public void replaceIfLower(int id, Product newProduct) {
         if (!collection.containsKey(id)) {
-            throw new ValidationException("Элемента id = " + id + " не существует, нельзя изменить на меньшее!");
+            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя изменить на меньшее!");
         }
         Product exist = collection.get(id);
         int i = newProduct.compareTo(exist);
@@ -105,7 +103,7 @@ public class CollectionManager {
 
     public Product minByOwner() {
         if (collection.isEmpty()) {
-            throw new CollectionIsEmpty("Коллекция пустая, нельзя найти минимум по полю owner!");
+            throw new RuntimeException("Коллекция пустая, нельзя найти минимум по полю owner!");
         }
         return collection.values().stream().min(Comparator.comparing(product -> product.getOwner().getName())).get();
     }

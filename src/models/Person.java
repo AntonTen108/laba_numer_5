@@ -1,8 +1,5 @@
 package models;
 
-
-import exceptions.*;
-
 import java.util.Objects;
 
 public class Person {
@@ -13,24 +10,24 @@ public class Person {
 
     public void setName(String name) {
         if (name == null) {
-            throw new ValidationException("Поле name не может быть null!");
+            throw new RuntimeException("Поле name не может быть null!");
         }
         if (name.isEmpty()) {
-            throw new ValidationException("Поле name не может быть пустым!");
+            throw new RuntimeException("Поле name не может быть пустым!");
         }
         this.name = name;
     }
 
     public void setBirthday(java.time.LocalDateTime birthday) {
         if (birthday == null) {
-            throw new  ValidationException("Поле birthday не может быть null!");
+            throw new  RuntimeException("Поле birthday не может быть null!");
         }
         this.birthday = birthday;
     }
 
     public void setEyeColor(Color eyeColor) {
         if (eyeColor == null) {
-            throw new ValidationException("Поле eyeColor не может быть null!");
+            throw new RuntimeException("Поле eyeColor не может быть null!");
         }
         this.eyeColor = eyeColor;
     }

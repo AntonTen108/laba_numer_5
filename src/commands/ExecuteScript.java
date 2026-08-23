@@ -1,7 +1,6 @@
 package commands;
 
 import collection.CollectionManager;
-import exceptions.ValidationException;
 import io.InputSource;
 import io.ScriptInput;
 import manager.CommandManager;
@@ -28,7 +27,7 @@ public class ExecuteScript extends AbstractCommand {
         String filename = args[0];
 
         if (runningScripts.contains(filename)) {
-            throw new ValidationException("Рекурсия! Скрипт " + filename + " уже выполняется!");
+            throw new RuntimeException("Рекурсия! Скрипт " + filename + " уже выполняется!");
         }
 
         runningScripts.push(filename);
