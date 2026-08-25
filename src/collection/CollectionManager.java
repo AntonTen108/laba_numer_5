@@ -119,14 +119,38 @@ public class CollectionManager {
         return result;
     }
 
-    public List<Product> filterGreaterThanOwner(Person threshold) {
+    public List<Product> filterGreaterThanOwner(Person owner) {
         List<Product> result = new ArrayList<>();
         for (Product product : collection.values()) {
-            if (product.getOwner().getName().compareTo(threshold.getName()) > 0) {
+            if (product.getOwner().getName().compareTo(owner.getName()) > 0) {
                 result.add(product);
             }
         }
         return result;
     }
+    /*
+    класс создает 2 поля: коллекцию и инициализированную дату
 
+    метод info возвращает тип, дату инициализации и количество элементов коллекции
+
+    метод show возвращает массив значений коллекции
+
+    метод insert добавляет в коллекцию новый элемент, осуществляет проверку на различие id
+
+    метод update проверяет, существует ли входной id, если есть то все параметры элемента с данным id подвергаются изменению кроме id и creationDate
+
+    метод removeKey существует ли входной id, если да то объект коллекции с данным id удаляется
+
+    метод clear удаляет все элементы коллекции
+
+    метод replaceIfGreater проверяет есть ли элемент с данным id, сравнивает цену нового объекта с уже существующем, если цена нового объекта больше то его значения переходят в объект с меньшей ценой
+
+    метод replaceIfLower делает все тоже, самое что и replaceIfGreater только наоборот
+
+    метод minByOwner проверяет пустая ли коллекция, если нет, то возвращает минимальный элемент по переменной owner.
+
+    метод filterContainsName создает новый массив продуктов, через цикл проходит по каждому элемента массива, если переменная name содержит подстроку name part этот элемент добавляется в только, что созданный список, он же и выводится
+
+    метод filterGreaterThanOwner делает практически тоже, самое что и метод filterContainsName зв исключением того, что он не смотрит, содержится ли задаваемое имя во всех элементах массива и сравнивает входное имя со всеми, что есть в коллекции
+     */
 }

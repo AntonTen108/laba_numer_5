@@ -168,18 +168,29 @@ public class ProductAsker {
         long price = askLong(source, "цену");
         String partNumber = askStringIsNotEmpty(source, "порядковый номер. Он должен составлять не менее 14 символов, но не более 79");
         UnitOfMeasure unitOfMeasure = askEnum(source, "",  UnitOfMeasure.class);
-//        source.clue("единицу измерения (нажмите enter, если хотите оставить значение unitOfMeasure пустым) доступные варианты: " + UnitOfMeasure.class);
-//        String unitInput = source.nextLine();
-//        if (unitInput.isEmpty()) {
-//            unitOfMeasure = null;
-//        } else {
-//            unitOfMeasure = Enum.valueOf(UnitOfMeasure.class, unitInput);
-//        }
-
         Person owner = askPerson(source);
         return new Product(name,  coordinates, price, partNumber, unitOfMeasure, owner);
 
     }
+    /*
+    этот класс нужен для запроса и проверки данных, необходимых для модели
+
+    поле allowRetry нужно для того, чтобы понять нужно ли повторять ввод при ошибке (чтение в интерактивном режиме или из файла)
+
+    метод askStringIsNotEmpty запрашивает не пустую строку
+
+    методы askDouble, askInt, askLong, askFloat, запрашивают числа
+
+    метод askEnum запрашивает enum, в интерактивном режиме выводит все доступные константы, также реализована "защита" от нижнего регистра и каждый ввод пользователя автоматические превращается в верхний регистр.
+
+    метод askDateTime запрашивает дату и время
+
+    метод askLocation запрашивает координаты, реализована возможность оставить пустым
+
+    метод askPerson запрашивает данные о владельце
+
+    метод askProduct запрашивает данные о продукте
+     */
 }
 
 

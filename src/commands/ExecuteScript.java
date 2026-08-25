@@ -44,6 +44,5 @@ public class ExecuteScript extends AbstractCommand {
         }finally {
             runningScripts.pop();
         }
-
     }
 }

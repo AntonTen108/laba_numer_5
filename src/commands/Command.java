@@ -12,5 +12,9 @@ public interface Command {
                     CollectionManager collection,
                     CommandManager manager);
 }
-
-//String [] args, InputSource source, CollectionManager collection, CommandManager manager
+/*
+интерфейс Commands наследуют все классы команд.
+метод getName нужен для того чтобы, передавать имя команды
+метод getHelp нужен для того чтобы, передавать функционал команды
+метод execute должен реализовывать логику команды в интерактивном режиме
+*/

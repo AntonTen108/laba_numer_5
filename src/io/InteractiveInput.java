@@ -26,3 +26,10 @@ public class InteractiveInput implements InputSource {
      System.out.println("Введите " + fieldName + " : ");
     }
 }
+/*
+класс читает данные из консоли от пользователя
+
+метод nextLine читает следующую строку
+
+метод clue выводит подсказку для пользователя перед тем как он напишет какие либо данные
+ */

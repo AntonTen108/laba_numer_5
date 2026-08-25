@@ -26,6 +26,15 @@ public class ScriptInput implements InputSource {
 
     @Override
     public void clue(String fieldName) { }
+    /*
+    класс отвечает за чтение данных из скрипта
 
+    поле filename - хранит имя файла
+    поле reader - читает строки из файла
+
+    метод nextLine читает следующую строку файла
+
+    метод clue ничего не делает тк подсказки файлу не нужны
+     */
 }
 

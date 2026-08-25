@@ -24,6 +24,6 @@ public class FilterContainsName extends AbstractCommand {
         requireArgs(args, 1);
         String name = args[0];
         List<Product> products = collection.filterContainsName(name);
-       return productList(products, "Совпадений не найдено!");
+        return productList(products, "Совпадений не найдено!");
     }
 }
