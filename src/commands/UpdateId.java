@@ -5,6 +5,8 @@ import io.InputSource;
 import io.ProductAsker;
 import manager.CommandManager;
 import models.Product;
+import network.Request;
+import network.Response;
 
 public class UpdateId extends AbstractCommand {
 
@@ -19,12 +21,17 @@ public class UpdateId extends AbstractCommand {
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
+        String[] args = request.getArguments();
         requireArgs(args, 1);
         int id = parseId(args[0]);
-        ProductAsker askP = createAsker(source);
-        Product product = askP.askProduct(source);
+        Product product = request.getProduct();
+
+        if (product == null) {
+            throw new IllegalArgumentException("Объект Product не передан!");
+        }
         collection.update(id, product);
-        return "Элемент с id = " + id + " успешно обновлен!";
+
+        return Response.ok("Элемент с id = " + id + " успешно обновлен!");
     }
 }

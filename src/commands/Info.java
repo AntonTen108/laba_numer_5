@@ -3,6 +3,8 @@ package commands;
 import collection.CollectionManager;
 import io.InputSource;
 import manager.CommandManager;
+import network.Request;
+import network.Response;
 
 public class Info extends AbstractCommand {
 
@@ -17,7 +19,7 @@ public class Info extends AbstractCommand {
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
-        return collection.info();
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
+        return Response.ok(collection.info());
     }
 }

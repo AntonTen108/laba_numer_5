@@ -1,53 +1,49 @@
 package collection;
 
-import models.*;
+import models.Person;
+import models.Product;
+
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class CollectionManager {
-    private TreeMap<Integer, Product> collection;
-    private LocalDateTime initializationDate;
-
+    private final TreeMap<Integer, Product> collection;
+    private final LocalDateTime initializationDate;
 
     public CollectionManager() {
-        this.collection = new TreeMap<>();
-        this.initializationDate = LocalDateTime.now();
+        collection = new TreeMap<>();
+        initializationDate = LocalDateTime.now();
     }
 
     public String info() {
-        return "Тип = " + collection.getClass().getName() + "\n дата инициализации = "+ initializationDate + "\n количество элементов = " + collection.size();
+        return "Тип = " + collection.getClass().getName() + "\nДата инициализации = " + initializationDate + "\nКоличество элементов = " + collection.size();
     }
 
     public List<Product> show() {
-        return new ArrayList<>(collection.values());
+        return collection.values().stream().sorted(Comparator.comparing(Product::getName)).toList();
     }
 
     public void insert(int id, Product product) {
         if (collection.containsKey(id)) {
-            throw new RuntimeException("Элемент id = "+ id + " уже существует!");
+            throw new IllegalArgumentException("Элемент с id = " + id + " уже существует!");
         }
+
         collection.put(id, product);
     }
 
     public void update(int id, Product newData) {
-        if (!collection.containsKey(id)) {
-            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя обновить!");
-        }
-        Product exist = collection.get(id);
-
-        exist.setName(newData.getName());
-        exist.setCoordinates(newData.getCoordinates());
-        exist.setPrice(newData.getPrice());
-        exist.setPartNumber(newData.getPartNumber());
-        exist.setUnitOfMeasure(newData.getUnitOfMeasure());
-        exist.setOwner(newData.getOwner());
+        Product existingProduct = getProduct(id);
+        copyProductData(existingProduct, newData);
     }
-
 
     public void removeKey(int id) {
         if (!collection.containsKey(id)) {
-            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя удалить!");
+            throw new IllegalArgumentException("Элемента с id = " + id + " не существует!");
         }
+
         collection.remove(id);
     }
 
@@ -55,102 +51,61 @@ public class CollectionManager {
         collection.clear();
     }
 
-    public void removeLower(Product lower) {
-        List<Integer> toRemove = new ArrayList<>();
-
-        for (Product product : collection.values()) {
-            if (product.compareTo(lower) < 0) {
-                toRemove.add(product.getId());
-            }
-        }
-        for (int id : toRemove) {
-            collection.remove(id);
-        }
-    }
-    public void replaceIfGreater(int id, Product newProduct) {
-        if (!collection.containsKey(id)) {
-            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя изменить на большее!");
-        }
-        Product exist = collection.get(id);
-        int i = newProduct.compareTo(exist);
-
-        if (i > 0) {
-            exist.setName(newProduct.getName());
-            exist.setCoordinates(newProduct.getCoordinates());
-            exist.setPrice(newProduct.getPrice());
-            exist.setOwner(newProduct.getOwner());
-            exist.setPartNumber(newProduct.getPartNumber());
-            exist.setUnitOfMeasure(newProduct.getUnitOfMeasure());
-        }
+    public void removeLower(Product product) {
+        List<Integer> keysToRemove = collection.entrySet().stream().filter(entry -> entry.getValue().compareTo(product) < 0).map(Map.Entry::getKey).toList();
+        keysToRemove.forEach(collection::remove);
     }
 
-    public void replaceIfLower(int id, Product newProduct) {
-        if (!collection.containsKey(id)) {
-            throw new RuntimeException("Элемента id = " + id + " не существует, нельзя изменить на меньшее!");
-        }
-        Product exist = collection.get(id);
-        int i = newProduct.compareTo(exist);
+    public boolean replaceIfGreater(int id, Product newProduct) {
+        Product existingProduct = getProduct(id);
 
-        if (i < 0) {
-            exist.setName(newProduct.getName());
-            exist.setCoordinates(newProduct.getCoordinates());
-            exist.setPrice(newProduct.getPrice());
-            exist.setOwner(newProduct.getOwner());
-            exist.setPartNumber(newProduct.getPartNumber());
-            exist.setUnitOfMeasure(newProduct.getUnitOfMeasure());
+        if (newProduct.compareTo(existingProduct) <= 0) {
+            return false;
         }
+
+        copyProductData(existingProduct, newProduct);
+        return true;
+    }
+
+    public boolean replaceIfLower(int id, Product newProduct) {
+        Product existingProduct = getProduct(id);
+
+        if (newProduct.compareTo(existingProduct) >= 0) {
+            return false;
+        }
+
+        copyProductData(existingProduct, newProduct);
+        return true;
     }
 
     public Product minByOwner() {
-        if (collection.isEmpty()) {
-            throw new RuntimeException("Коллекция пустая, нельзя найти минимум по полю owner!");
-        }
-        return collection.values().stream().min(Comparator.comparing(product -> product.getOwner().getName())).get();
+        return collection.values().stream().min(Comparator.comparing(product -> product.getOwner().getName())).orElseThrow(() -> new IllegalStateException("Коллекция пуста, нельзя найти минимум по полю owner!"));
     }
 
-
     public List<Product> filterContainsName(String namePart) {
-        List<Product> result = new ArrayList<>();
-        for (Product product : collection.values()) {
-            if (product.getName().contains(namePart)) {
-                result.add(product);
-            }
-        }
-        return result;
+        return collection.values().stream().filter(product -> product.getName().contains(namePart)).sorted(Comparator.comparing(Product::getName)).toList();
     }
 
     public List<Product> filterGreaterThanOwner(Person owner) {
-        List<Product> result = new ArrayList<>();
-        for (Product product : collection.values()) {
-            if (product.getOwner().getName().compareTo(owner.getName()) > 0) {
-                result.add(product);
-            }
-        }
-        return result;
+        return collection.values().stream().filter(product -> product.getOwner().getName().compareTo(owner.getName()) > 0).sorted(Comparator.comparing(Product::getName)).toList();
     }
-    /*
-    класс создает 2 поля: коллекцию и инициализированную дату
 
-    метод info возвращает тип, дату инициализации и количество элементов коллекции
+    private Product getProduct(int id) {
+        Product product = collection.get(id);
 
-    метод show возвращает массив значений коллекции
+        if (product == null) {
+            throw new IllegalArgumentException("Элемента с id = " + id + " не существует!");
+        }
 
-    метод insert добавляет в коллекцию новый элемент, осуществляет проверку на различие id
+        return product;
+    }
 
-    метод update проверяет, существует ли входной id, если есть то все параметры элемента с данным id подвергаются изменению кроме id и creationDate
-
-    метод removeKey существует ли входной id, если да то объект коллекции с данным id удаляется
-
-    метод clear удаляет все элементы коллекции
-
-    метод replaceIfGreater проверяет есть ли элемент с данным id, сравнивает цену нового объекта с уже существующем, если цена нового объекта больше то его значения переходят в объект с меньшей ценой
-
-    метод replaceIfLower делает все тоже, самое что и replaceIfGreater только наоборот
-
-    метод minByOwner проверяет пустая ли коллекция, если нет, то возвращает минимальный элемент по переменной owner.
-
-    метод filterContainsName создает новый массив продуктов, через цикл проходит по каждому элемента массива, если переменная name содержит подстроку name part этот элемент добавляется в только, что созданный список, он же и выводится
-
-    метод filterGreaterThanOwner делает практически тоже, самое что и метод filterContainsName зв исключением того, что он не смотрит, содержится ли задаваемое имя во всех элементах массива и сравнивает входное имя со всеми, что есть в коллекции
-     */
+    private void copyProductData(Product destination, Product source) {
+        destination.setName(source.getName());
+        destination.setCoordinates(source.getCoordinates());
+        destination.setPrice(source.getPrice());
+        destination.setPartNumber(source.getPartNumber());
+        destination.setUnitOfMeasure(source.getUnitOfMeasure());
+        destination.setOwner(source.getOwner());
+    }
 }

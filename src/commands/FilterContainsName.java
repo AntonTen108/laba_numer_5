@@ -4,6 +4,8 @@ import collection.CollectionManager;
 import io.InputSource;
 import manager.CommandManager;
 import models.Product;
+import network.Request;
+import network.Response;
 
 import java.util.List;
 
@@ -20,7 +22,8 @@ public class FilterContainsName extends AbstractCommand {
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
+        String[] args = request.getArguments();
         requireArgs(args, 1);
         String name = args[0];
         List<Product> products = collection.filterContainsName(name);

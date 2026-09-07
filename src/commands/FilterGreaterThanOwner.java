@@ -6,6 +6,8 @@ import io.ProductAsker;
 import manager.CommandManager;
 import models.Person;
 import models.Product;
+import network.Request;
+import network.Response;
 
 import java.util.List;
 
@@ -22,9 +24,11 @@ public class FilterGreaterThanOwner extends AbstractCommand {
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
-        ProductAsker per = createAsker(source);
-        Person owner = per.askPerson(source);
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
+        Person owner = request.getOwner();
+        if (owner == null) {
+            throw new IllegalArgumentException("Объект Person не передан!");
+        }
         List<Product> products = collection.filterGreaterThanOwner(owner);
         return productList(products, "Совпадений не найдено!");
 

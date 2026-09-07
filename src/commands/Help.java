@@ -3,8 +3,11 @@ package commands;
 import collection.CollectionManager;
 import io.InputSource;
 import manager.CommandManager;
+import network.Request;
+import network.Response;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class Help extends AbstractCommand {
 
@@ -19,12 +22,8 @@ public class Help extends AbstractCommand {
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
-        Collection<Command> allHelp = manager.getCommand();
-        String res = "";
-        for (Command c : allHelp) {
-            res += c.getHelp() + "\n";
-        }
-        return res;
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
+        String text = manager.getCommands().stream().map(Command::getHelp).collect(Collectors.joining(System.lineSeparator()));
+        return Response.ok(text);
     }
 }

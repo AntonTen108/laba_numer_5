@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coordinates {
+public class Coordinates implements Serializable {
     private Double x; //Поле не может быть null
     private Integer y; //Поле не может быть null
 
