@@ -1,9 +1,12 @@
 package commands;
 
 import collection.CollectionManager;
-import io.InputSource;
 import manager.CommandManager;
 import models.Product;
+import network.Request;
+import network.Response;
+
+import java.util.Collections;
 
 public class MinByOwner extends AbstractCommand{
 
@@ -18,8 +21,8 @@ public class MinByOwner extends AbstractCommand{
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
         Product p =  collection.minByOwner();
-        return p.toString();
+        return Response.ok("", Collections.singletonList(p));
     }
 }

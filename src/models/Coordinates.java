@@ -1,10 +1,9 @@
 package models;
 
-import exceptions.*;
-
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Coordinates {
+public class Coordinates implements Serializable {
     private Double x; //Поле не может быть null
     private Integer y; //Поле не может быть null
 
@@ -17,13 +16,13 @@ public class Coordinates {
 
     public void setX(Double x) {
         if (x == null) {
-            throw new ValidationException("x не может быть null!");
+            throw new RuntimeException("x не может быть null!");
         }
         this.x = x;
     }
     public void setY(Integer y) {
         if (y == null) {
-            throw new ValidationException("y не может быть null!");
+            throw new RuntimeException("y не может быть null!");
         }
             this.y = y;
     }

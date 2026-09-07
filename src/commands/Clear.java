@@ -1,21 +1,27 @@
 package commands;
 
 import collection.CollectionManager;
-import io.InputSource;
 import manager.CommandManager;
+import network.Request;
+import network.Response;
 
 public class Clear extends AbstractCommand {
 
+    @Override
     public String getName() {
         return "clear";
     }
 
+    @Override
     public String getHelp() {
         return "clear : очистить коллекцию";
     }
 
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
+    @Override
+    public Response execute(Request request,
+                            CollectionManager collection,
+                            CommandManager manager) {
         collection.clear();
-        return "Коллекция успешно очищена!";
+        return Response.ok("Коллекция успешно очищена!");
     }
 }

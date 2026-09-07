@@ -5,6 +5,8 @@ import io.InputSource;
 import io.ProductAsker;
 import manager.CommandManager;
 import models.Product;
+import network.Request;
+import network.Response;
 
 public class RemoveLower extends AbstractCommand {
 
@@ -19,10 +21,14 @@ public class RemoveLower extends AbstractCommand {
     }
 
     @Override
-    public String execute(String [] args, InputSource source, CollectionManager collection, CommandManager manager) {
-        ProductAsker askP = createAsker(source);
-        Product product = askP.askProduct(source);
-        collection.removeLower(product);
-        return "Элементы с ценой меньше чем  " + product.getPrice() + " удалены из коллекции!";
+    public Response execute(Request request, CollectionManager collection, CommandManager manager) {
+        Product p = request.getProduct();
+
+        if (p == null) {
+            throw new IllegalArgumentException("Объект Product не передан!");
+        }
+
+        collection.removeLower(p);
+        return Response.ok("Элементы с ценой меньше чем  " + p.getPrice() + " удалены из коллекции!");
     }
 }

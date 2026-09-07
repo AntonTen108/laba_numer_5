@@ -1,25 +1,51 @@
 package io;
 import models.*;
-import collection.*;
-import exceptions.ValidationException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-
+/**
+ * класс для запроса полей объекта Product у пользователя
+ * получает строки из InputSource и преобразует их в нужные типы данных
+ * также проверяет корректность введённых значений
+ */
 public class ProductAsker {
-
+    /**
+     * определяет можно ли пользователю повторно вводить значение при ошибке
+     * значение true используется при вводе из консоли
+     * значение false используется при вводе из скрипта
+     */
     private final boolean allowRetry;
-
+    /**
+     * создаёт объект для запроса данных Product
+     *
+     * @param allowRetry разрешение на повторный ввод при ошибке
+     */
     public ProductAsker(boolean allowRetry) {
         this.allowRetry = allowRetry;
     }
-
+    /**
+     * запрашивает у пользователя строковое значение
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return строка введённая пользователем
+     */
     public String askString(InputSource source, String fieldName) {
         source.clue(fieldName);
         return source.nextLine();
     }
-
+    /**
+     * запрашивает строку которая не может быть пустой
+     *
+     * при неверном вводе пользователь может повторить ввод
+     * если повторный ввод запрещён выбрасывается ValidationException
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return непустая строка введённая пользователем
+     * @throws RuntimeException если передано пустое значение и повторный ввод запрещён
+     */
     public String askStringIsNotEmpty(InputSource source, String fieldName) {
         while (true) {
             source.clue(fieldName);
@@ -28,11 +54,18 @@ public class ProductAsker {
                  return input;
              }
              if (!allowRetry) {
-                 throw new ValidationException(" Поле " + fieldName + " не может быть пустым, попробуйте снова!");
+                 throw new RuntimeException(" Поле " + fieldName + " не может быть пустым, попробуйте снова!");
              } System.out.println("Вы ввели пустое значение, пожалуйста попробуйте снова");
         }
     }
-
+    /**
+     * запрашивает значение типа double
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return число типа double
+     * @throws RuntimeException если введён неправильный формат и повторный ввод запрещён
+     */
     public double askDouble(InputSource source, String fieldName) {
         while (true) {
             source.clue(fieldName);
@@ -42,12 +75,19 @@ public class ProductAsker {
                 return answer;
         } catch (NumberFormatException e) {
                 if (!allowRetry) {
-                throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                 } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
             }
             }
         }
-
+    /**
+     * запрашивает значение типа int
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return число типа int
+     * @throws RuntimeException если введён неправильный формат и повторный ввод запрещён
+     */
         public int askInt (InputSource source, String fieldName) {
             while (true) {
                 source.clue(fieldName);
@@ -57,12 +97,19 @@ public class ProductAsker {
                     return answer;
                 } catch (NumberFormatException e) {
                     if (!allowRetry) {
-                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                        throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                     } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
                 }
             }
         }
-
+    /**
+     * запрашивает значение типа long
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return число типа long
+     * @throws RuntimeException если введён неправильный формат и повторный ввод запрещён
+     */
         public long askLong(InputSource source, String fieldName) {
             while (true) {
                 source.clue(fieldName);
@@ -72,12 +119,19 @@ public class ProductAsker {
                     return answer;
                 } catch (NumberFormatException e) {
                     if (!allowRetry) {
-                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                        throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                     } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
                 }
             }
         }
-
+    /**
+     * запрашивает значение типа float
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return число типа float
+     * @throws RuntimeException если введён неправильный формат и повторный ввод запрещён
+     */
         public float askFloat(InputSource source, String fieldName) {
             while (true) {
                 source.clue(fieldName);
@@ -87,12 +141,23 @@ public class ProductAsker {
                     return answer;
                 } catch (NumberFormatException e) {
                     if (!allowRetry) {
-                        throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                        throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                     } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
                 }
             }
         }
-
+    /**
+     * запрашивает значение перечисления Enum
+     *
+     * перед вводом выводит все возможные константы переданного Enum
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @param enumClass класс перечисления из которого выбирается значение
+     * @param <T> тип перечисления
+     * @return выбранная константа перечисления
+     * @throws RuntimeException если введено неверное значение и повторный ввод запрещён
+     */
     public <T extends Enum<T>> T askEnum(InputSource source, String fieldName, Class<T> enumClass) {
         T[] constants = enumClass.getEnumConstants();
         System.out.println("Доступные значения для ввода " + fieldName + ": " + Arrays.toString(constants));
@@ -104,13 +169,22 @@ public class ProductAsker {
                 return Enum.valueOf(enumClass, input.trim().toUpperCase());
             } catch (IllegalArgumentException e) {
                 if (!allowRetry) {
-                    throw new ValidationException("Значение поля " + fieldName + " введено неверно!");
+                    throw new RuntimeException("Значение поля " + fieldName + " введено неверно!");
                 }
                 System.out.println("Такой константы нет, пожалуйста попробуйте снова");
             }
         }
     }
-
+    /**
+     * запрашивает дату и время типа LocalDateTime
+     *
+     * дата должна быть введена в формате который понимает LocalDateTime parse
+     *
+     * @param source источник ввода данных
+     * @param fieldName название запрашиваемого поля
+     * @return введённая дата и время
+     * @throws RuntimeException если введён неправильный формат даты и повторный ввод запрещён
+     */
     public LocalDateTime askDateTime(InputSource source, String fieldName){
         while (true) {
             source.clue(fieldName);
@@ -120,18 +194,31 @@ public class ProductAsker {
                 return answer;
             } catch (DateTimeParseException e) {
                 if (!allowRetry) {
-                    throw new ValidationException("Значение поля " + fieldName+ " введено неверно!");
+                    throw new RuntimeException("Значение поля " + fieldName+ " введено неверно!");
                 } System.out.println("Вы вели некорректный формат значения, пожалуйста попробуйте снова");
           }
       }
     }
 
+    /**
+     * запрашивает координаты объекта Product
+     *
+     * @param source источник ввода данных
+     * @return созданный объект Coordinates
+     */
     public Coordinates askCoordinates (InputSource source) {
         double x = askDouble(source, "координату x");
         int y = askInt(source, "координату y");
         return new Coordinates(x, y);
     }
-
+    /**
+     * запрашивает координаты местоположения владельца
+     * если пользователь оставит координату x пустой то метод вернёт null
+     *
+     * @param source источник ввода данных
+     * @return созданный объект Location или null
+     * @throws RuntimeException если введён неправильный формат и повторный ввод запрещён
+     */
     public Location askLocation(InputSource source) {
         while (true) {
             source.clue(" координату x (нажмите enter, если хотите оставить класс location пустым)");
@@ -143,19 +230,23 @@ public class ProductAsker {
 
             try {
                 long x = Long.parseLong(xInput);
-                int y = askInt(source, " значение y ");
-                float z = askFloat(source, "значение z ");
+                int y = askInt(source, " координату y ");
+                float z = askFloat(source, "координату z ");
                 return new Location(x, y, z);
             } catch (NumberFormatException e) {
                 if (!allowRetry) {
-                    throw new ValidationException("Введён некорректный тип данных для поля x!");
+                    throw new RuntimeException("Введён некорректный тип данных для поля x!");
                 }
                 System.out.println("Вы ввели некорректный формат значения, пожалуйста попробуйте снова");
             }
         }
     }
-
-
+    /**
+     * запрашивает данные владельца продукта
+     *
+     * @param source источник ввода данных
+     * @return созданный объект Person
+     */
     public  Person askPerson(InputSource source) {
         String name = askStringIsNotEmpty(source, "имя владельца");
         LocalDateTime birthday = askDateTime(source, "дату рождения формата(гггг-мм-ддT(англ)чч:мм:сс)");
@@ -163,25 +254,41 @@ public class ProductAsker {
         Location location = askLocation(source);
         return new Person(name, birthday, eyeColor, location);
     }
-
+    /**
+     * запрашивает все данные для создания объекта Product
+     *
+     * @param source источник ввода данных
+     * @return созданный объект Product
+     */
     public Product askProduct(InputSource source) {
         String name = askStringIsNotEmpty(source, "название продукта");
         Coordinates coordinates = askCoordinates(source);
         long price = askLong(source, "цену");
-        String partNumber = askStringIsNotEmpty(source, "порядковый номер");
-        UnitOfMeasure unitOfMeasure;
-        source.clue("единицу измерения (нажмите enter, если хотите оставить значение unitOfMeasure пустым)");
-        String unitInput = source.nextLine();
-        if (unitInput.isEmpty()) {
-            unitOfMeasure = null;
-        } else {
-            unitOfMeasure = Enum.valueOf(UnitOfMeasure.class, unitInput);
-        }
-
+        String partNumber = askStringIsNotEmpty(source, "порядковый номер. Он должен составлять не менее 14 символов, но не более 79");
+        UnitOfMeasure unitOfMeasure = askEnum(source, "",  UnitOfMeasure.class);
         Person owner = askPerson(source);
         return new Product(name,  coordinates, price, partNumber, unitOfMeasure, owner);
 
     }
+    /*
+    этот класс нужен для запроса и проверки данных, необходимых для модели
+
+    поле allowRetry нужно для того, чтобы понять нужно ли повторять ввод при ошибке (чтение в интерактивном режиме или из файла)
+
+    метод askStringIsNotEmpty запрашивает не пустую строку
+
+    методы askDouble, askInt, askLong, askFloat, запрашивают числа
+
+    метод askEnum запрашивает enum, в интерактивном режиме выводит все доступные константы, также реализована "защита" от нижнего регистра и каждый ввод пользователя автоматические превращается в верхний регистр.
+
+    метод askDateTime запрашивает дату и время
+
+    метод askLocation запрашивает координаты, реализована возможность оставить пустым
+
+    метод askPerson запрашивает данные о владельце
+
+    метод askProduct запрашивает данные о продукте
+     */
 }
 
 

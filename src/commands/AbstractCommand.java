@@ -1,42 +1,48 @@
 package commands;
 
-import exceptions.ValidationException;
-import io.InputSource;
-import io.InteractiveInput;
-import io.ProductAsker;
 import models.Product;
+import network.Response;
 
 import java.util.List;
 
-public abstract class AbstractCommand  implements Command {
+public abstract class AbstractCommand implements Command {
 
-    protected int parseId(String args) {
+    protected int parseId(String value) {
+        final int id;
+
         try {
-            return Integer.parseInt(args);
+            id = Integer.parseInt(value);
         } catch (NumberFormatException e) {
-            throw new ValidationException("Некорректный id = " + args);
+            throw new IllegalArgumentException(
+                    "Некорректный id: " + value
+            );
         }
-    }
 
-    protected ProductAsker createAsker(InputSource source) {
-        boolean allowRetry = source instanceof InteractiveInput;
-        return new ProductAsker(allowRetry);
+        if (id <= 0) {
+            throw new IllegalArgumentException(
+                    "Значение id должно быть больше нуля!"
+            );
+        }
+
+        return id;
     }
 
     protected void requireArgs(String[] args, int count) {
-        if (args.length < count) {
-            throw new ValidationException(" Недостаточно аргументов для команды" + getName());
+        if (args == null || args.length < count) {
+            throw new IllegalArgumentException(
+                    "Недостаточно аргументов для команды " + getName()
+            );
         }
     }
 
-    protected String productList(List<Product> products, String empty) {
-        if (products.isEmpty()) {
-            return empty;
+    protected Response productList(
+            List<Product> products,
+            String emptyMessage
+    ) {
+        if (products == null || products.isEmpty()) {
+            return Response.ok(emptyMessage);
         }
-        String res = "";
-        for (Product p : products) {
-            res += p.toString() + "\n";
-        }
-        return res;
+
+        return Response.ok("", products);
     }
 }

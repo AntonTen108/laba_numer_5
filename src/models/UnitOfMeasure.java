@@ -1,6 +1,8 @@
 package models;
 
-public enum UnitOfMeasure {
+import java.io.Serializable;
+
+public enum UnitOfMeasure implements Serializable {
     KILOGRAMS,
     CENTIMETERS,
     SQUARE_METERS,

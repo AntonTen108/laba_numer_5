@@ -1,10 +1,10 @@
 package models;
 
-import exceptions.ValidationException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-public class Product implements  Comparable<Product> {
+public class Product implements  Comparable<Product>, Serializable {
     private  int id;//Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
     private static int lastId = 0;
     private String name; //Поле не может быть null, Строка не может быть пустой
@@ -25,10 +25,10 @@ public class Product implements  Comparable<Product> {
 
     public void setName(String name) {
         if ( name == null) {
-            throw new ValidationException("Поле name не может быть null!");
+            throw new RuntimeException("Поле name не может быть null!");
         }
         if(name.isEmpty()) {
-            throw new ValidationException("Поле name не может быть пустым!");
+            throw new RuntimeException("Поле name не может быть пустым!");
         }
         this.name = name;
     }
@@ -39,7 +39,7 @@ public class Product implements  Comparable<Product> {
 
     public void setCoordinates(Coordinates coordinates) {
         if (coordinates == null){
-            throw new ValidationException("Поле coordinates не может быть null!");
+            throw new RuntimeException("Поле coordinates не может быть null!");
         }
         this.coordinates = coordinates;
     }
@@ -55,7 +55,7 @@ public class Product implements  Comparable<Product> {
 
     public void setPrice(long price) {
         if (price <= 0){
-            throw new ValidationException("поле price должно быть больше 0!");
+            throw new RuntimeException("поле price должно быть больше 0!");
         }
         this.price = price;
     }
@@ -66,13 +66,13 @@ public class Product implements  Comparable<Product> {
 
     public void setPartNumber(String partNumber) {
         if ( partNumber == null) {
-            throw new ValidationException("Поле partnumber не должно быть null!");
+            throw new RuntimeException("Поле partnumber не должно быть null!");
         }
         if (partNumber.length() < 14) {
-            throw new ValidationException("Длина строки partnumber должна быть не меньше 14!");
+            throw new RuntimeException("Длина строки partnumber должна быть не меньше 14!");
         }
         if (partNumber.length() > 79) {
-            throw new ValidationException("Длина строки  partnumber должна быть больше 79!");
+            throw new RuntimeException("Длина строки  partnumber должна быть больше 79!");
         }
         this.partNumber = partNumber;
     }
@@ -91,7 +91,7 @@ public class Product implements  Comparable<Product> {
 
     public void setOwner(Person owner) {
         if (owner == null) {
-            throw new ValidationException("Поле Owner не должно быть null!");
+            throw new RuntimeException("Поле Owner не должно быть null!");
         }
         this.owner = owner;
     }
@@ -118,14 +118,14 @@ public class Product implements  Comparable<Product> {
                Person owner) {
 
         if (id <= 0) {
-            throw new ValidationException("поле id должно быть больше 0!");
+            throw new RuntimeException("поле id должно быть больше 0!");
         }
         this.id = id;
         if (id > lastId){
             lastId = id;
         }
         if (creationDate == null) {
-            throw new ValidationException("поле creationDate не может быть null!");
+            throw new RuntimeException("поле creationDate не может быть null!");
         }
         this.creationDate= creationDate;
 
